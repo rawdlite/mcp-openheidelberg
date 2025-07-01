@@ -1,0 +1,7 @@
+[calendar]
+url = <ical url>
+
+[workpackage]
+url = <workpackage url>
+apikey = <api token>
+ical_token = <ical token>
