@@ -1,4 +1,4 @@
-from server.workpackages import WorkpackageParser
+from server.workpackages import WorkPackageParser
 
 def test_workpackage():
     """
@@ -9,12 +9,12 @@ def test_workpackage():
 
     :return: None
     """
-    wp = WorkpackageParser()
+    wp = WorkPackageParser()
     assert wp
     assert type(wp.apikey) == str
 
 def test_get_workpackages():
-    wp = WorkpackageParser()
+    wp = WorkPackageParser()
     workpackages = wp.get_workpackages()
     assert type(workpackages) == list
 
