@@ -1,4 +1,4 @@
-# mcp-ical
+# mcp-openheidelberg
 Getting and merging ical entries
 
 - clone repository
