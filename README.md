@@ -19,7 +19,7 @@ claude_desktop_config.json
         "/Users/tom/projects/python-dev/mcp-openheidelberg",
         "--with",
         "mcp",
-        "server/ical.py"
+        "server/openheidelberg.py"
       ]
     }
   }
