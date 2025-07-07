@@ -1,4 +1,5 @@
 import asyncio
+import os
 from typing import Optional
 from contextlib import AsyncExitStack
 
@@ -7,9 +8,11 @@ from mcp.client.stdio import stdio_client
 
 from anthropic import Anthropic
 from dotenv import load_dotenv
+from server.config import Config
 
-load_dotenv()  # load environment variables from .env
-
+#load_dotenv()  # load environme7nt variables from .env
+config = Config().get('model')
+os.environ["ANTHROPIC_API_KEY"] = config['ANTHROPIC_API_KEY']
 
 class MCPClient:
     def __init__(self):
