@@ -15,7 +15,7 @@ async def main(page: ft.Page):
     #page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
     page.scroll = ft.ScrollMode.AUTO
-    client = ChatClient({'client': 'anthropic'}).client
+    client = ChatClient({'client': 'ollama'}).client
     chat = ft.Column()
     new_message = ft.TextField()
     new_message.bgcolor = ft.Colors.LIGHT_BLUE_50
@@ -55,6 +55,12 @@ async def main(page: ft.Page):
         raise
     chat.controls.append(ft.Text(response))
     button = ft.ElevatedButton("Send", on_click=send_click)
+    usage = ft.Text("You can ask me everything\n"
+                    "Popular Questions are:\n"
+                    "- Who is a member of Openheidelberg?\n"    
+                    "- What tasks is currently worked on?\n"
+                    "- What are the next Events"    
+                    )
     dev_switch = ft.Switch(label="Dev Mode", on_change=toggle_devmode)
     #button.bgcolor = ft.colors.BLUE
     page.add(
@@ -67,7 +73,12 @@ async def main(page: ft.Page):
             height=100,
             width=500,
         ),
-        
+        ft.Container(
+            content=usage,
+            bgcolor=ft.Colors.GREY_50,
+            padding=10,
+            width=500,
+        ),           
         ft.Container(
             content=dev_switch,
             bgcolor=ft.Colors.GREY_50,

@@ -35,7 +35,7 @@ class LLMClient():
             # Manually set the context window to limit memory usage
             context_window=8000,
         )
-        self.agent = MCPAgent(llm=llm, client=client, max_steps=20)
+        self.agent = MCPAgent(llm=llm, client=self.client, max_steps=20)
         return f"Connected to server with tools: "
 
     async def process_query(self, query: str) -> str:

@@ -1,4 +1,6 @@
 import niobot
+import asyncio
+from client import ChatClient
 from server.config import Config
 
 
@@ -36,8 +38,41 @@ async def echo(ctx: niobot.Context, *, message: str):
     await ctx.respond("You said: " + message)
 
 @client.command()
-async def mcp(ctx: niobot.Context, *, message: str):
-    await ctx.respond(f"Your Query: {message}")
-    await ctx.respond(f"My Answer: not yet connected to mcp client")
+async def chat(ctx: niobot.Context, *, message: str):
+    client = ChatClient({'client': 'ollama'}).client
+    response = await client.connect_to_server()
+    await ctx.respond(response)
+    response = await client.process_query(message)
+    await ctx.respond(f"My Answer: {response}")
+    await client.cleanup()
+
+@client.command()
+async def events(ctx: niobot.Context):
+    client = ChatClient({'client': 'ollama'}).client
+    response = await client.connect_to_server()
+    #await ctx.respond(response)
+    response = await client.process_query("Zeige mir die nächsten Termine bei Openheidelberg")
+    await ctx.respond(f"Answer: {response}")
+    await client.cleanup()
+
+@client.command()
+async def tasks(ctx: niobot.Context):
+    client = ChatClient({'client': 'ollama'}).client
+    response = await client.connect_to_server()
+    #await ctx.respond(response)
+    response = await client.process_query("Welche Aufgaben gibt es bei Openheidelberg?")
+    await ctx.respond(f"Answer: {response}")
+    await client.cleanup()
+
+@client.command()
+async def members(ctx: niobot.Context, *, message: str):
+    client = ChatClient({'client': 'ollama'}).client
+    response = await client.connect_to_server()
+    #await ctx.respond(response)
+    response = await client.process_query("Wer ist Mitglied bei Openheidelberg")
+    await ctx.respond(f"My Answer: {response}")
+    await client.cleanup()
+
+
 
 client.run(access_token=config['token'])
