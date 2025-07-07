@@ -1,6 +1,6 @@
 import flet as ft
 import asyncio
-from client import MCPClient
+from client import ChatClient
 
 DEVMODE = False
 
@@ -15,7 +15,7 @@ async def main(page: ft.Page):
     #page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
     page.scroll = ft.ScrollMode.AUTO
-    client = MCPClient()
+    client = ChatClient({'client': 'anthropic'}).client
     chat = ft.Column()
     new_message = ft.TextField()
     new_message.bgcolor = ft.Colors.LIGHT_BLUE_50
