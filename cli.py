@@ -11,20 +11,21 @@ def main():
     Output in json format can be further processed by datapipelines
     """
     parser = argparse.ArgumentParser()
-    parser.add_argument('--verbose', '-v', action='store_true', help='be verbose')
+    #Todo: improve argparser to showw valid commands
+    #parser.add_argument('--verbose', '-v', action='store_true', help='be verbose')
     parser.add_argument('command', type=str, help='execute command')
     args = parser.parse_args()
-    if args.command == 'ical':
+    if args.command == 'events':
         ep = EventParser()
         print(ep.get_events())
-    elif args.command == 'wp':
+    elif args.command == 'tasks':
         wp = WorkPackageParser()
         print(wp.get_workpackages())
-    elif args.command == 'member':
+    elif args.command == 'members':
         wp = WorkPackageParser()
         print(wp.get_members())
     else:
-        print("Unknown command")
+        print("command (events,tasks,members) requiered")
 
 if __name__ == "__main__":
     main()

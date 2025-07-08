@@ -31,3 +31,19 @@ create claude_desktop_config.json
 }
 
 obviously adapt the path.
+
+## Working on the Api
+
+    uv run cli.py tasks
+
+## Working on the client
+
+    uv run client.py
+
+## Working on the Web App
+
+    uv run flet run
+
+## Working on the Chat
+
+    uv run matrix.py
