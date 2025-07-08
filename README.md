@@ -1,5 +1,10 @@
 # mcp-openheidelberg
-Getting and merging ical entries
+
+## Project Description
+
+https://nx.openheidelberg.de/s/HJjR7FAtbmLYtLY
+
+##Getting started
 
 - clone repository
 - cd mpc-openheidelberg
@@ -7,7 +12,7 @@ Getting and merging ical entries
 - uv sync
 
 
-claude_desktop_config.json
+create claude_desktop_config.json
 
 {
   "mcpServers": {
@@ -24,3 +29,5 @@ claude_desktop_config.json
     }
   }
 }
+
+obviously adapt the path.
