@@ -1,20 +1,22 @@
 [workpackages]
-url = 'https://plan.openheidelberg.de'
-apikey = "< your key >"
-ical_token = "< token >"
+token= 'https://plan.openheidelberg.de'
+apikey = 'key'
+ical_token = 'token'
 
 [calendar]
-url = "https://nx.openheidelberg.de/remote.php/dav/public-calendars/cEeeKR9xGJ6E66GC?export"
+url = "https://nx.openheidelberg.de/remote.php/dav/pubtoken-calendars/cEeeKR9xGJ6E66GC?export"
 
 [matrix]
-token = "< matrix token >"
-homeserver = "https://matrix.org"  # it is important that you use the 
-user_id = "< bot id >"                                        
+token = "token"
+homeserver = "https://matrix.org"  # it is important that you use the full URL here
+user_id = "@oh-bot:matrix.org"                                        
 device_id = "altstadt"
 command_prefix = "!"                                                  
 case_insensitive = true                                               
-owner_id = '< user id >'                                     
+owner_id = ""                                     
 ignore_self = true
 
-[model]
-ANTHROPIC_API_KEY = "< api key >"
+[client]
+library = "mcp_use"  # "mcp_use" or "anthropic"
+provider = "ollama"  # "ollama" or "anthropic"
+model = "qwen3"  # "qwen3" or "claude-3-sonnet-20240229"
