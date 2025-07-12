@@ -66,7 +66,8 @@ async def tasks(ctx: niobot.Context):
 
 @client.command()
 async def members(ctx: niobot.Context, *, message: str):
-    client = ChatClient({'client': 'ollama'}).client
+    client_config = Config().get('client')
+    client = ChatClient(client_config).client
     response = await client.connect_to_server()
     #await ctx.respond(response)
     response = await client.process_query("Wer ist Mitglied bei Openheidelberg")

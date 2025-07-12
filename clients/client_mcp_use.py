@@ -9,29 +9,24 @@ from langchain_ollama import ChatOllama
 
 load_dotenv()  # 🔑 Load API keys
 
-# 1️⃣ Describe which MCP servers you want.  Here we spin up Playwright in a headless browser.
-CONFIG = {
-    "mcpServers": {
-        "openheidelberg": {
-            "command": "python",
-            "args": ["server/openheidelberg.py"],
-            "env": None  # required if you run inside Xvfb / CI
-        }
-    }
-}
+# 1️⃣ Describe which MCP servers you want. .
 
 class LLMClient():
 
-    def __init__(self):
-        self.client = MCPClient.from_dict(CONFIG)
+    def __init__(self, config: dict):
+        #self.client = MCPClient.from_dict(CONFIG)
+        config_file = os.path.join(os.path.dirname(__file__), '../mcp_server_config.json')
+        self.client = MCPClient.from_config_file(config_file)
         self.agent = None
+        self.config = config
 
     async def connect_to_server(self):
         """Connect to the MCP server
         """
         llm = ChatOllama(
-            model="llama3.2:latest",
+            model=self.config["model"],
             request_timeout=120.0,
+            temperature=0.7,
             # Manually set the context window to limit memory usage
             context_window=8000,
         )

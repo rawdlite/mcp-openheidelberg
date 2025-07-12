@@ -15,11 +15,12 @@ config = Config().get('model')
 os.environ["ANTHROPIC_API_KEY"] = config['ANTHROPIC_API_KEY']
 
 class LLMClient:
-    def __init__(self):
+    def __init__(self, config: Optional[dict] = None):
         # Initialize session and client objects
         self.session: Optional[ClientSession] = None
         self.exit_stack = AsyncExitStack()
         self.anthropic = Anthropic()
+        self.config = config or {}
 
     async def connect_to_server(self):
         """Connect to the MCP server

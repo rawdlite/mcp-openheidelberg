@@ -1,5 +1,6 @@
 import flet as ft
 import asyncio
+from server.config import Config
 from client import ChatClient
 
 DEVMODE = False
@@ -15,7 +16,8 @@ async def main(page: ft.Page):
     #page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
     page.scroll = ft.ScrollMode.AUTO
-    client = ChatClient({'client': 'ollama'}).client
+    config = Config().get('client')
+    client = ChatClient(config).client
     chat = ft.Column()
     new_message = ft.TextField()
     new_message.bgcolor = ft.Colors.LIGHT_BLUE_50
