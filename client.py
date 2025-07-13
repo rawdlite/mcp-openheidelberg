@@ -21,12 +21,20 @@ async def main():
     parser = argparse.ArgumentParser(description="Openheidelberg Chat Client")
     parser.add_argument("--model", type=str, help="Model to use")
     parser.add_argument("--library", type=str, help="Library backend to use")
+    parser.add_argument("--provider", type=str, help="Provider to use")
+    parser.add_argument("-v", "--verbose", action="store_true", help="Enable verbose mode")
     args = parser.parse_args()
     
     if args.model:
         config['model'] = args.model
     if args.library:
         config['library'] = args.library
+    if args.provider:
+        config['provider'] = args.provider
+    if args.verbose:
+        print(f"library: {config['library']}\n"
+              f"model: {config['model']}\n"
+              f"provider: {config['provider']}")
     try:
         await client.connect_to_server()
         await client.chat_loop()

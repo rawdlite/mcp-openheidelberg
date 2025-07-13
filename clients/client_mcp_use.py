@@ -23,13 +23,21 @@ class LLMClient():
     async def connect_to_server(self):
         """Connect to the MCP server
         """
-        llm = ChatOllama(
-            model=self.config["model"],
-            request_timeout=120.0,
-            temperature=0.7,
-            # Manually set the context window to limit memory usage
-            context_window=8000,
-        )
+        if self.config["provider"] == "openai":
+            from langchain_openai import ChatOpenAI
+            llm = ChatOpenAI(model=self.config["model"], temperature=0.7)
+        elif self.config["provider"] == "anthropic":
+            from langchain_anthropic import ChatAnthropic
+            llm = ChatAnthropic(model=self.config["model"], temperature=0.7)
+        elif self.config["provider"] == "ollama":
+            from langchain_ollama import ChatOllama
+            llm = ChatOllama(
+                model=self.config["model"],
+                request_timeout=120.0,
+                temperature=0.7,
+                # Manually set the context window to limit memory usage
+                context_window=8000,
+            )
         self.agent = MCPAgent(llm=llm, client=self.client, max_steps=20)
         return f"Connected to server with tools: "
 
