@@ -10,9 +10,9 @@ from anthropic import Anthropic
 from dotenv import load_dotenv
 from server.config import Config
 
-#load_dotenv()  # load environme7nt variables from .env
-config = Config().get('model')
-os.environ["ANTHROPIC_API_KEY"] = config['ANTHROPIC_API_KEY']
+load_dotenv()  # load environme7nt variables from .env
+config = Config().get('client')
+#os.environ["ANTHROPIC_API_KEY"] = config['ANTHROPIC_API_KEY']
 
 class LLMClient:
     def __init__(self, config: Optional[dict] = None):
@@ -61,7 +61,7 @@ class LLMClient:
 
         # Initial Claude API call
         response = self.anthropic.messages.create(
-            model="claude-3-5-sonnet-20241022",
+            model=config.get('model', "claude-3-5-sonnet-20241022"),
             max_tokens=1000,
             messages=messages,
             tools=available_tools
