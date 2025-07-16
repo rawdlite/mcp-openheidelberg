@@ -1,9 +1,9 @@
 import json
 from mcp.server.fastmcp import FastMCP
 try:
-    from ical import EventParser
+    from events import EventParser
 except ImportError:
-    from server.ical import EventParser
+    from server.events import EventParser
 
 try:
     from workpackages import WorkPackageParser

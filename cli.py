@@ -1,5 +1,5 @@
 import argparse
-from server.icalendar import EventParser
+from server.events import EventParser
 from server.workpackages import WorkPackageParser
 
 
