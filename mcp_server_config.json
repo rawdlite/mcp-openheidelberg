@@ -1,7 +1,7 @@
 {"mcpServers": {
 	"openheidelberg": {
 		"command": "python",
-		"args": ["/Users/tom/projects/python-dev/mcp-openheidelberg/server/openheidelberg.py"]
+		"args": ["server/openheidelberg.py"]
     }
   }
 }

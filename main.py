@@ -53,11 +53,12 @@ async def main(page: ft.Page):
     rg = ft.RadioGroup(
         content=ft.Column(
             [
-                ft.Radio(value="llama3.2", label="Llama3.2"),
-                ft.Radio(value="qwen3", label="Qwen3"),
-                ft.Radio(value="mistral-nemo", label="Mistral"),
-                ft.Radio(value="claude-3-sonnet-20240229", label="Claude 3"),
-                ft.Radio(value="claude-4-sonnet", label="Claude 4"),
+                ft.Radio(value="llama3.2", label="Llama3.2 (basic)"),
+                ft.Radio(value="qwen3", label="Qwen3 (reasoning)"),
+                ft.Radio(value="command-r", label="Command-r"),
+                ft.Radio(value="llama3.3", label="llama3.3 (slow)"),
+                #ft.Radio(value="claude-3-sonnet-20240229", label="Claude 3"),
+                #ft.Radio(value="claude-4-sonnet", label="Claude 4"),
             ]
         ),
         on_change=radiogroup_changed,

@@ -33,11 +33,11 @@ class WorkPackageParser:
         url = f"{self.url}/api/v3/projects/18/work_packages"
         response = requests.get(url, auth=('apikey', self.apikey))
         if response.status_code == 200:
-            return self.build_result_dict(response)
+            return self.build_result_dict(response, dataset_name='members')
         else:
             return None
 
-    def build_result_dict(self, workpackages: List[Dict[str, Any]]) -> Dict[str, Any]:
+    def build_result_dict(self, workpackages: List[Dict[str, Any]], dataset_name='workpackages') -> Dict[str, Any]:
         """
         Build the result dictionary.
         :param workpackages:
@@ -45,9 +45,9 @@ class WorkPackageParser:
         """
         result = {'total': workpackages.json()['total'],
                   'count': workpackages.json()['count'],
-                  'workpackages': []}
+                  dataset_name: []}
         for workpackage in workpackages.json()['_embedded']['elements']:
-            result['workpackages'].append(self.workpackage2dict(workpackage))
+            result[dataset_name].append(self.workpackage2dict(workpackage))
         return result
 
     def get_workpackages(self) -> Dict[str, Any]:

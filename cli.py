@@ -1,5 +1,5 @@
 import argparse
-from server.ical import EventParser
+from server.icalendar import EventParser
 from server.workpackages import WorkPackageParser
 
 

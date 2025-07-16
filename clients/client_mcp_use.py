@@ -39,7 +39,7 @@ class LLMClient():
                 context_window=8000,
             )
         self.agent = MCPAgent(llm=llm, client=self.client, max_steps=20)
-        return f"Connected to server with tools: "
+        return f"Connected to server with {self.config["model"]} "
 
     async def process_query(self, query: str) -> str:
         result = await self.agent.run(query)
