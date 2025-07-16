@@ -10,6 +10,10 @@ async def main(page: ft.Page):
     global client    
     config = Config().get('client')
     client = ChatClient(config).client
+    try:
+        response = await client.connect_to_server()
+    except asyncio.CancelledError:
+        raise
     progress_ring = ft.ProgressRing()
     progress_ring.visible = False
 
@@ -76,6 +80,7 @@ async def main(page: ft.Page):
     
     
     chat = ft.Column()
+    chat.controls.append(ft.Text(response))
     t = ft.Text()
     button = ft.ElevatedButton("Send", on_click=send_click)
     button.bgcolor = ft.Colors.BLUE
