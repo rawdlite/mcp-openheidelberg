@@ -39,7 +39,8 @@ async def echo(ctx: niobot.Context, *, message: str):
 
 @client.command()
 async def chat(ctx: niobot.Context, *, message: str):
-    client = ChatClient({'client': 'ollama'}).client
+    client_config = Config().get('client')
+    client = ChatClient(client_config).client
     response = await client.connect_to_server()
     await ctx.respond(response)
     response = await client.process_query(message)
@@ -48,7 +49,8 @@ async def chat(ctx: niobot.Context, *, message: str):
 
 @client.command()
 async def events(ctx: niobot.Context):
-    client = ChatClient({'client': 'ollama'}).client
+    client_config = Config().get('client')
+    client = ChatClient(client_config).client
     response = await client.connect_to_server()
     #await ctx.respond(response)
     response = await client.process_query("Zeige mir die nächsten Termine bei Openheidelberg")
@@ -57,7 +59,8 @@ async def events(ctx: niobot.Context):
 
 @client.command()
 async def tasks(ctx: niobot.Context):
-    client = ChatClient({'client': 'ollama'}).client
+    client_config = Config().get('client')
+    client = ChatClient(client_config).client
     response = await client.connect_to_server()
     #await ctx.respond(response)
     response = await client.process_query("Welche Aufgaben gibt es bei Openheidelberg?")
