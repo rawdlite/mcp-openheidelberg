@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "openheidelberg": {
+      "command": "uv",
+      "args": ["run", "server/openheidelberg.py"]
+    }
+  }
+}

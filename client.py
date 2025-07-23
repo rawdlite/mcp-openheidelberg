@@ -17,7 +17,6 @@ class ChatClient:
 
 async def main():
     config = Config().get('client')
-    client = ChatClient(config).client
     parser = argparse.ArgumentParser(description="Openheidelberg Chat Client")
     parser.add_argument("--model", type=str, help="Model to use")
     parser.add_argument("--library", type=str, help="Library backend to use")
@@ -35,6 +34,8 @@ async def main():
         print(f"library: {config['library']}\n"
               f"model: {config['model']}\n"
               f"provider: {config['provider']}")
+    
+    client = ChatClient(config).client
     try:
         await client.connect_to_server()
         await client.chat_loop()

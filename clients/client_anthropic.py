@@ -10,9 +10,7 @@ from anthropic import Anthropic
 from dotenv import load_dotenv
 from server.config import Config
 
-load_dotenv()  # load environme7nt variables from .env
-config = Config().get('client')
-#os.environ["ANTHROPIC_API_KEY"] = config['ANTHROPIC_API_KEY']
+load_dotenv()  # load environment variables from .env
 
 class LLMClient:
     def __init__(self, config: Optional[dict] = None):
@@ -20,10 +18,11 @@ class LLMClient:
         self.session: Optional[ClientSession] = None
         self.exit_stack = AsyncExitStack()
         self.anthropic = Anthropic()
-        self.config = config or {}
+        self.config = config or Config.get('client')
 
     async def connect_to_server(self):
-        """Connect to the MCP server
+        """
+        Connect to the MCP server
         """
         server_params = StdioServerParameters(
             command="python",
@@ -61,7 +60,7 @@ class LLMClient:
 
         # Initial Claude API call
         response = self.anthropic.messages.create(
-            model=config.get('model', "claude-3-5-sonnet-20241022"),
+            model=self.config.get('model', "claude-3-5-sonnet-20241022"),
             max_tokens=1000,
             messages=messages,
             tools=available_tools
@@ -94,7 +93,7 @@ class LLMClient:
 
                 # Get next response from Claude
                 response = self.anthropic.messages.create(
-                    model="claude-3-5-sonnet-20241022",
+                    model=self.config.get('model',"claude-3-5-sonnet-20241022"),
                     max_tokens=1000,
                     messages=messages,
                 )
