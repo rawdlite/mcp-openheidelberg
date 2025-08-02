@@ -1,5 +1,7 @@
-__pycache__/
+__pycache__/ollama.cpython-313.pyc
 **/__pycache__/
+.opencode*
 .idea
 .env
 .aider*
+logs/*

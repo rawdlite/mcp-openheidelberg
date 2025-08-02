@@ -8,6 +8,7 @@ from server.config import Config
 
 import json
 import logging
+ALLOWED_USERS = ['@chrisbg:matrix.org','@tomroth:matrix.org']
 
 # Configure logging
 logging.basicConfig(
@@ -66,13 +67,13 @@ async def write_to_couchdb(data: Dict[str, Any]) -> Dict[str, Any]:
         db = await couchdb[database_name]
     # Write data to database
     # set _id if to username
-    username = f"{data.get('firstname', 'x')}[0]{data.get('lastname')}"
-    new_doc = await db.create(
-        username,
-        data=data
-    )
-    await new_doc.save()
-    logging.info(f"Document written to CouchDB with ID: {new_doc.id}")
+        username = data.get('username', f"{data.get('firstname', 'x')[0]}{data.get('lastname')}")
+        new_doc = await db.create(
+            username.lower(),
+            data=data
+        )
+        await new_doc.save()
+        logging.info(f"Document written to CouchDB with ID: {new_doc.id}")
     logging.info(f"Data written to CouchDB: {data}")
     return data
 
@@ -85,6 +86,7 @@ async def on_ready(sync_result: niobot.SyncResponse):
 # A simple command
 @client.command()
 async def ping(ctx: niobot.Context):
+    """get latency in ms"""
     latency = ctx.latency
     await ctx.respond(f"Pong! {latency:.2f}ms")
     logging.info(f"Received ping command from {ctx.sender}")
@@ -93,15 +95,20 @@ async def ping(ctx: niobot.Context):
 # A command with arguments
 @client.command()
 async def onboard(ctx: niobot.Context, *, message: str):
+    """onboarding new users"""
     sender = ctx.event.sender
-    input = message.split('')
+    if sender not in ALLOWED_USERS:
+        await ctx.respond(f"{sender} Sorry, you are not allowed to use the onboard command")
+        return
+    input = message.split(' ')
+    request_format = "<br><br>firstname:\<firstname\> lastname:\<lastname\> email:\<mail address\> \[username:\<optional username\>\]"
     if len(input) < 3:
-        await ctx.respond("Please provide your first name, last name, and email in the format: firstname:<firstname> lastname:<lastname> email:<email>")
+        await ctx.respond(f"Please use the format\n: {request_format}")
         return
     onboarding_user = {}
     for item in input:
-        if not item.startswith(('firstname:', 'lastname:', 'email:')):
-            await ctx.respond(f"Invalid input format: {item}. Please use the format: firstname:<firstname> lastname:<lastname> email:<email>")
+        if not item.startswith(('firstname:', 'lastname:', 'email:', 'username:')):
+            await ctx.respond(f"Invalid input format: {item}. \nPlease use the format:\n {request_format}")
             return
         key, value = item.split(':', 1)
         onboarding_user[key] = value
@@ -127,11 +134,13 @@ async def execute_chat_command(ctx, query_message, response_prefix):
 
 @client.command()
 async def chat(ctx: niobot.Context, *, message: str):
+    """chat with the bot"""
     await execute_chat_command(ctx, message, "My Answer")
 
 
 @client.command()
 async def events(ctx: niobot.Context):
+    """Get upcomming Events"""
     await execute_chat_command(
         ctx, 
         "Zeige mir die nächsten Termine bei Openheidelberg", 
@@ -140,6 +149,7 @@ async def events(ctx: niobot.Context):
 
 @client.command()
 async def tasks(ctx: niobot.Context):
+    """Get open tasks"""
     await execute_chat_command(
         ctx,
         "Welche Aufgaben gibt es bei Openheidelberg?", 
@@ -149,6 +159,7 @@ async def tasks(ctx: niobot.Context):
 
 @client.command()
 async def members(ctx: niobot.Context, *, message: str):
+    """Mitglieder bei Openheidelberg"""
     await execute_chat_command(
         ctx, 
         "Wer ist Mitglied bei Openheidelberg", 
