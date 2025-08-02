@@ -1,5 +1,6 @@
 import niobot
 import asyncio
+import aiohttp
 import aiocouchdb
 from typing import List, Dict, Any
 from client import ChatClient
