@@ -1,6 +1,6 @@
 import niobot
 import asyncio
-import aiocouchdb
+from aiocouch import CouchDB
 from typing import List, Dict, Any
 from client import ChatClient
 from server.config import Config
@@ -25,7 +25,14 @@ if isinstance(config, str):
     config = json.loads(config)
 cbd_config = Config().get('couchdb')
 if isinstance(cbd_config, str):
-    cbd_config = json.loads(cbd_config)
+    try:
+        cbd_config = json.loads(cbd_config)
+    except Exception as e:
+        logging.error(f"Failed to parse CouchDB config: {e}")
+        cbd_config = {}
+if not isinstance(cbd_config, dict):
+    logging.error("CouchDB config is not a dictionary.")
+    cbd_config = {}
 
 client = niobot.NioBot(
     # Note that all of these options other than the following are optional:
@@ -43,35 +50,27 @@ client = niobot.NioBot(
 
 async def write_to_couchdb(data: List[Dict[str, Any]]):
     """Write data to CouchDB."""
-    server = aiocouchdb.Server(
-        cbd_config.get('couchdb_url'), 
-        username=cbd_config.get('couchdb_username'), 
-        password=cbd_config.get('couchdb_password')
-    )
-    if not await server.exists():
-        logging.error("CouchDB server does not exist or is unreachable.")
-        return None
+    couchdb_url = cbd_config.get('couchdb_url') or "localhost:5984"
+    couchdb_username = cbd_config.get('couchdb_username') or ''
+    couchdb_password = cbd_config.get('couchdb_password') or ''
     database_name = cbd_config.get('couchdb_db')
-    try:
-        db = await server[database_name]
-    except aiocouchdb.exceptions.ResourceNotFound:
-        # Database doesn't exist, create it
-        db = await server.create(database_name)
-        logging.info(f"Created database {database_name}")
-    except Exception as e:
-        logging.error(f"Error accessing database {database_name}: {e}")
-        return None
+    if not couchdb_use:
+    async with CouchDB(
+        couchdb_url,
+        user=couchdb_username,
+        password=couchdb_password) as couchdb:
+        db = await couchdb[database_name]
+    
     # Write data to database
     for i, doc in enumerate(data):
-        # Add _id if not present
-        if '_id' not in doc:
-            doc['_id'] = f"user_{i}"
-        # Insert document
-        try:
-            await db.save(doc)
-        except Exception as e:
-            print(f"Error inserting document {i}: {str(e)}")
-            logging.error(f"Error inserting document {i}: {str(e)}") 
+        # set _id if to username
+        username = f"{doc.get('firstname', 'x')}[0]{doc.get('lastname')}"
+        new_doc = await db.create(
+            username,
+            data=doc
+        )
+        await new_doc.save()
+        logging.info(f"Document {i+1} written to CouchDB with ID: {new_doc.id}")
     logging.info(f"Data written to CouchDB: {data}")
     return data
 
@@ -107,7 +106,7 @@ async def onboard(ctx: niobot.Context, *, message: str):
     await ctx.respond(f"Onboarding user: {onboarding_user}")
     result = await write_to_couchdb([onboarding_user])
     if result:
-        await ctx.respond(f"User onboarded successfully: {onboarding_user}")
+        await ctx.respond(f"@{sender}:User onboarded successfully: {onboarding_user}")
     else:
         await ctx.respond("Failed to onboard user due to CouchDB error.")
     
