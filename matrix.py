@@ -93,7 +93,7 @@ async def ping(ctx: niobot.Context):
 # A command with arguments
 @client.command()
 async def onboard(ctx: niobot.Context, *, message: str):
-    sender = ctx.sender
+    sender = ctx.event.sender
     input = message.split('')
     if len(input) < 3:
         await ctx.respond("Please provide your first name, last name, and email in the format: firstname:<firstname> lastname:<lastname> email:<email>")
