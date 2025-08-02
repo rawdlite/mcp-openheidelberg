@@ -48,8 +48,12 @@ client = niobot.NioBot(
     ignore_self=True  # default is True, set to false to not ignore the bot's own messages
 )
 
-async def write_to_couchdb(data: List[Dict[str, Any]]):
-    """Write data to CouchDB."""
+async def write_to_couchdb(data: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Write data to CouchDB.
+    param data: List of dictionaries to write to CouchDB.
+    return: List of dictionaries written to CouchDB.
+    """
     couchdb_url = cbd_config.get('couchdb_url') or "localhost:5984"
     couchdb_username = cbd_config.get('couchdb_username') or ''
     couchdb_password = cbd_config.get('couchdb_password') or ''
@@ -60,17 +64,15 @@ async def write_to_couchdb(data: List[Dict[str, Any]]):
         user=couchdb_username,
         password=couchdb_password) as couchdb:
         db = await couchdb[database_name]
-    
     # Write data to database
-    for i, doc in enumerate(data):
-        # set _id if to username
-        username = f"{doc.get('firstname', 'x')}[0]{doc.get('lastname')}"
-        new_doc = await db.create(
-            username,
-            data=doc
-        )
-        await new_doc.save()
-        logging.info(f"Document {i+1} written to CouchDB with ID: {new_doc.id}")
+    # set _id if to username
+    username = f"{data.get('firstname', 'x')}[0]{data.get('lastname')}"
+    new_doc = await db.create(
+        username,
+        data=data
+    )
+    await new_doc.save()
+    logging.info(f"Document written to CouchDB with ID: {new_doc.id}")
     logging.info(f"Data written to CouchDB: {data}")
     return data
 
@@ -104,7 +106,7 @@ async def onboard(ctx: niobot.Context, *, message: str):
         key, value = item.split(':', 1)
         onboarding_user[key] = value
     await ctx.respond(f"Onboarding user: {onboarding_user}")
-    result = await write_to_couchdb([onboarding_user])
+    result = await write_to_couchdb(onboarding_user)
     if result:
         await ctx.respond(f"@{sender}:User onboarded successfully: {onboarding_user}")
     else:
