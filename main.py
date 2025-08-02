@@ -9,6 +9,9 @@ client = None
 async def main(page: ft.Page):
     global client    
     config = Config().get('client')
+    if isinstance(config, str):
+        import json
+        config = json.loads(config)
     client = ChatClient(config).client
     try:
         response = await client.connect_to_server()
@@ -25,10 +28,13 @@ async def main(page: ft.Page):
         progress_ring.value = None  # Indeterminate mode
         page.update()
         if DEVMODE:
-            response = f"You are in Dev Mode {dir(client.config.get('model'))}"
+            response = f"You are in Dev Mode {dir(config.get('model'))}"
         else:
             try:
-                response = await client.process_query(query)
+                if client is None:
+                    response = "Client is not connected."
+                else:
+                    response = await client.process_query(query)
             except asyncio.CancelledError:
                 response = "Request cancelled."
                 progress_ring.visible = False
