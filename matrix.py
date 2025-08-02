@@ -58,11 +58,11 @@ async def write_to_couchdb(data: Dict[str, Any]) -> Dict[str, Any]:
     couchdb_username = cbd_config.get('couchdb_username') or ''
     couchdb_password = cbd_config.get('couchdb_password') or ''
     database_name = cbd_config.get('couchdb_db')
-    if not couchdb_use:
     async with CouchDB(
         couchdb_url,
         user=couchdb_username,
-        password=couchdb_password) as couchdb:
+        password=couchdb_password
+    ) as couchdb:
         db = await couchdb[database_name]
     # Write data to database
     # set _id if to username
