@@ -66,10 +66,9 @@ async def write_to_couchdb(data: Dict[str, Any]) -> Dict[str, Any]:
     ) as couchdb:
         db = await couchdb[database_name]
     # Write data to database
-    # set _id if to username
-        username = data.get('username', f"{data.get('firstname', 'x')[0]}{data.get('lastname')}")
+        doc_id = f"{data.get('firstname',"-")}.{data.get('lastname')}".replace(" ", "_")
         new_doc = await db.create(
-            username.lower(),
+            doc_id.lower(),
             data=data
         )
         await new_doc.save()

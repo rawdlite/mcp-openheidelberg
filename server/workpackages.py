@@ -30,12 +30,14 @@ class WorkPackageParser:
         Get the workpackages from the API.
         :return:
         """
-        url = f"{self.url}/api/v3/projects/18/work_packages"
-        response = requests.get(url, auth=('apikey', self.apikey))
-        if response.status_code == 200:
-            return self.build_result_dict(response, dataset_name='members')
-        else:
-            return None
+        response = "This function is disabled until DSGVO implications are resolved."
+        # url = f"{self.url}/api/v3/projects/18/work_packages"
+        # response = requests.get(url, auth=('apikey', self.apikey))
+        # if response.status_code == 200:
+        #     return self.build_result_dict(response, dataset_name='members')
+        # else:
+        #     return None
+        return response
 
     def build_result_dict(self, workpackages: List[Dict[str, Any]], dataset_name='workpackages') -> Dict[str, Any]:
         """
