@@ -16,24 +16,13 @@ logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
         logging.FileHandler('logs/matrix.log'),  # Log to file
-        logging.StreamHandler()  # Optionally log to console
+        #logging.StreamHandler()  # Optionally log to console
     ]
 )
 
 
-config = Config().get('matrix')
-if isinstance(config, str):
-    config = json.loads(config)
+config = Config().get('matrix') 
 cbd_config = Config().get('couchdb')
-if isinstance(cbd_config, str):
-    try:
-        cbd_config = json.loads(cbd_config)
-    except Exception as e:
-        logging.error(f"Failed to parse CouchDB config: {e}")
-        cbd_config = {}
-if not isinstance(cbd_config, dict):
-    logging.error("CouchDB config is not a dictionary.")
-    cbd_config = {}
 
 client = niobot.NioBot(
     # Note that all of these options other than the following are optional:
@@ -58,7 +47,7 @@ async def write_to_couchdb(data: Dict[str, Any]) -> Dict[str, Any]:
     couchdb_url = cbd_config.get('couchdb_url') or "localhost:5984"
     couchdb_username = cbd_config.get('couchdb_username') or ''
     couchdb_password = cbd_config.get('couchdb_password') or ''
-    database_name = cbd_config.get('couchdb_db')
+    database_name = cbd_config.get('couchdb_db') or 'openheidelberg'
     async with CouchDB(
         couchdb_url,
         user=couchdb_username,
@@ -89,9 +78,36 @@ async def ping(ctx: niobot.Context):
     """get latency in ms"""
     latency = ctx.latency
     await ctx.respond(f"Pong! {latency:.2f}ms")
-    logging.info(f"Received ping command from {ctx.sender}")
+    logging.info(f"Received ping command from {ctx.event.sender}")
 
-
+@client.command()
+async def on(ctx: niobot.Context, *, message: str):
+    """quick onboarding new users"""
+    request_format = "<br>\<firstname\> \<lastname\> \<mail address\><br><br>" + \
+    "use '_' for second first- or lastname"
+    sender = ctx.event.sender
+    if sender not in ALLOWED_USERS:
+        await ctx.respond(f"{sender} Sorry, you are not allowed to use the onboard command")
+        return
+    #ToDo: Use reg expression to counter frequent errors like double ' '
+    input = message.split(' ')
+    if len(input) != 3:
+        await ctx.respond(f"Please use the format\n: {request_format}")
+        return
+    onboarding_user = {
+        'firstname': input[0],
+        'lastname': input[1],
+        'email': input[2]
+    }
+    await ctx.respond(f"Onboarding user: {onboarding_user}")
+    #ToDo: maybe implemtent user confirmation step
+    result = await write_to_couchdb(onboarding_user)
+    if result:
+        await ctx.respond(f"@{sender}:User onboarded successfully: {onboarding_user}")
+    else:
+        await ctx.respond("Failed to onboard user due to CouchDB error.")
+    
+    
 # A command with arguments
 @client.command()
 async def onboard(ctx: niobot.Context, *, message: str):
