@@ -3,9 +3,12 @@ import recurring_ical_events
 import json
 from datetime import date, datetime, timedelta
 import caldav
-from config import Config
 from typing import Optional
 
+try:
+    from config import Config
+except ImportError:
+    from server.config import Config
 
 class EventParser:
     """
@@ -38,8 +41,8 @@ ation.
             'name': event['SUMMARY'],
             'start': event["DTSTART"].dt.strftime("%Y-%m-%d %H:%M:%S"),
             'end': event['DTEND'].dt.strftime("%Y-%m-%d %H:%M:%S"),
-            'description': event['DESCRIPTION'],
-            'location': event['LOCATION'],
+            'description': event.get('DESCRIPTION','No Description found'),
+            'location': event.get('LOCATION',"No Location provided"),
             'organizer': event.get('ORGANIZER','')
         }
         if event.get('categories'):
